@@ -6,6 +6,10 @@
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
+import Signatures from './signatures';
+import Authors from './authors';
+
+// Plugins
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
@@ -32,6 +36,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -62,7 +67,10 @@ ClassicEditor.builtinPlugins = [
 	TableToolbar,
 	TextTransformation,
 	Base64UploadAdapter,
-	Alignment
+	Alignment,
+	Signatures,
+	Authors,
+	Font
 ];
 
 // Editor configuration.
@@ -78,13 +86,16 @@ ClassicEditor.defaultConfig = {
 			'numberedList',
 			'|',
 			'alignment',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 			'|',
 			'imageUpload',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
+			'redo',
+			'|',
+			'authors'
 		]
 	},
 	image: {
