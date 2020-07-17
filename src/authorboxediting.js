@@ -6,35 +6,35 @@ import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils
 class InsertAuthorBoxCommand extends Command {
 	execute() {
 		this.editor.model.change( writer => {
-			// Insert <simpleBox>*</simpleBox> at the current selection position
+			// Insert <authorBox>*</authorBox> at the current selection position
 			// in a way that will result in creating a valid model structure.
-			this.editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertContent( createAuthorBox( writer ) );
 		} );
 	}
 
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const allowedIn = model.schema.findAllowedParent( selection.getFirstPosition(), 'simpleBox' );
+		const allowedIn = model.schema.findAllowedParent( selection.getFirstPosition(), 'authorBox' );
 
 		this.isEnabled = allowedIn !== null;
 	}
 }
 
-function createSimpleBox( writer ) {
-	const simpleBox = writer.createElement( 'simpleBox' );
-	const simpleBoxDescription = writer.createElement( 'simpleBoxDescription' );
+function createAuthorBox( writer ) {
+	const authorBox = writer.createElement( 'authorBox' );
+	const authorBoxDescription = writer.createElement( 'authorBoxDescription' );
 
-	writer.append( simpleBoxDescription, simpleBox );
+	writer.append( authorBoxDescription, authorBox );
 
 	// There must be at least one paragraph for the description to be editable.
 	// See https://github.com/ckeditor/ckeditor5/issues/1464.
-	writer.appendElement( 'paragraph', simpleBoxDescription );
+	writer.appendElement( 'paragraph', authorBoxDescription );
 
-	return simpleBox;
+	return authorBox;
 }
 
-export default class SimpleBoxEditing extends Plugin {
+export default class AuthorBoxEditing extends Plugin {
 	static get requires() {
 		return [ Widget ];
 	}
@@ -49,7 +49,7 @@ export default class SimpleBoxEditing extends Plugin {
 	_defineSchema() {
 		const schema = this.editor.model.schema;
 
-		schema.register( 'simpleBox', {
+		schema.register( 'authorBox', {
 			// Behaves like a self-contained object (e.g. an image).
 			isObject: true,
 
@@ -57,38 +57,38 @@ export default class SimpleBoxEditing extends Plugin {
 			allowWhere: '$block'
 		} );
 
-		schema.register( 'simpleBoxImage', {
+		schema.register( 'authorBoxImage', {
 			// Cannot be split or left by the caret.
 			isLimit: true,
 
-			allowIn: 'simpleBox',
+			allowIn: 'authorBox',
 
 			// Allow content which is allowed in blocks (i.e. text with attributes).
 			allowContentOf: '$block'
 		} );
 
-		schema.register( 'simpleBoxTitle', {
+		schema.register( 'authorBoxTitle', {
 			// Cannot be split or left by the caret.
 			isLimit: true,
 
-			allowIn: 'simpleBox',
+			allowIn: 'authorBox',
 
 			// Allow content which is allowed in blocks (i.e. text with attributes).
 			allowContentOf: '$block'
 		} );
 
-		schema.register( 'simpleBoxDescription', {
+		schema.register( 'authorBoxDescription', {
 			// Cannot be split or left by the caret.
 			isLimit: true,
 
-			allowIn: 'simpleBox',
+			allowIn: 'authorBox',
 
 			// Allow content which is allowed in the root (e.g. paragraphs).
 			allowContentOf: '$root'
 		} );
 
 		schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'simpleBoxDescription' ) && childDefinition.name == 'simpleBox' ) {
+			if ( context.endsWith( 'authorBoxDescription' ) && childDefinition.name == 'authorBox' ) {
 				return false;
 			}
 		} );
@@ -97,51 +97,51 @@ export default class SimpleBoxEditing extends Plugin {
 	_defineConverters() {
 		const conversion = this.editor.conversion;
 
-		// <simpleBox> converters
+		// <authorBox> converters
 		conversion.for( 'upcast' ).elementToElement( {
-			model: 'simpleBox',
+			model: 'authorBox',
 			view: {
 				name: 'section',
-				classes: 'simple-box'
+				classes: 'author-box'
 			}
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'simpleBox',
+			model: 'authorBox',
 			view: {
 				name: 'section',
-				classes: 'simple-box'
+				classes: 'author-box'
 			}
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'simpleBox',
+			model: 'authorBox',
 			view: ( modelElement, viewWriter ) => {
-				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
+				const section = viewWriter.createContainerElement( 'section', { class: 'author-box' } );
 
-				return toWidget( section, viewWriter, { label: 'simple box widget' } );
+				return toWidget( section, viewWriter, { label: 'author box widget' } );
 			}
 		} );
 
-		// <simpleBoxImage> converters
+		// <authorBoxImage> converters
 		conversion.for( 'upcast' ).elementToElement( {
-			model: 'simpleBoxImage',
+			model: 'authorBoxImage',
 			view: {
 				name: 'img',
-				classes: 'simple-box-image'
+				classes: 'author-box-image'
 			}
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'simpleBoxImage',
+			model: 'authorBoxImage',
 			view: {
 				name: 'img',
-				classes: 'simple-box-image'
+				classes: 'author-box-image'
 			}
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'simpleBoxImage',
+			model: 'authorBoxImage',
 			view: ( modelElement, viewWriter ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const img = viewWriter.createEditableElement( 'img', {
-					class: 'simple-box-image',
+					class: 'author-box-image',
 					src: ''
 				} );
 
@@ -149,51 +149,51 @@ export default class SimpleBoxEditing extends Plugin {
 			}
 		} );
 
-		// <simpleBoxTitle> converters
+		// <authorBoxTitle> converters
 		conversion.for( 'upcast' ).elementToElement( {
-			model: 'simpleBoxTitle',
+			model: 'authorBoxTitle',
 			view: {
 				name: 'h1',
-				classes: 'simple-box-title'
+				classes: 'author-box-title'
 			}
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'simpleBoxTitle',
+			model: 'authorBoxTitle',
 			view: {
 				name: 'h1',
-				classes: 'simple-box-title'
+				classes: 'author-box-title'
 			}
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'simpleBoxTitle',
+			model: 'authorBoxTitle',
 			view: ( modelElement, viewWriter ) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const h1 = viewWriter.createEditableElement( 'h1', { class: 'simple-box-title' } );
+				const h1 = viewWriter.createEditableElement( 'h1', { class: 'author-box-title' } );
 
 				return toWidgetEditable( h1, viewWriter );
 			}
 		} );
 
-		// <simpleBoxDescription> converters
+		// <authorBoxDescription> converters
 		conversion.for( 'upcast' ).elementToElement( {
-			model: 'simpleBoxDescription',
+			model: 'authorBoxDescription',
 			view: {
 				name: 'div',
-				classes: 'simple-box-description'
+				classes: 'author-box-description'
 			}
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'simpleBoxDescription',
+			model: 'authorBoxDescription',
 			view: {
 				name: 'div',
-				classes: 'simple-box-description'
+				classes: 'author-box-description'
 			}
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'simpleBoxDescription',
+			model: 'authorBoxDescription',
 			view: ( modelElement, viewWriter ) => {
 				// Note: You use a more specialized createEditableElement() method here.
-				const div = viewWriter.createEditableElement( 'div', { class: 'simple-box-description' } );
+				const div = viewWriter.createEditableElement( 'div', { class: 'author-box-description' } );
 
 				return toWidgetEditable( div, viewWriter );
 			}
