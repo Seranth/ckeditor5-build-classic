@@ -104,7 +104,7 @@
 	<script src="../build/ckeditor.js"></script>
 	<script>ClassicEditor
 			.create( document.querySelector( '.editor' ), {
-				
+
 				toolbar: {
 					items: [
 						'heading',
@@ -127,6 +127,7 @@
 						'indent',
 						'outdent',
 						'|',
+						'imageUpload',
 						'horizontalLine',
 						'blockQuote',
 						'insertTable',
@@ -146,10 +147,36 @@
 				image: {
 					toolbar: [
 						'imageTextAlternative',
+						'|',
+						'imageStyle:alignLeft',
 						'imageStyle:full',
-						'imageStyle:side'
+						'imageStyle:alignRight',
+						'imageResize'
+					],
+					styles: [
+						'full',
+						'alignLeft',
+						'alignRight'
 					]
 				},
+
+				resizeOptions: [
+					{
+						name: 'imageResize:original',
+						value: null,
+						label: 'Original'
+					},
+					{
+						name: 'imageResize:50',
+						value: '50',
+						label: '50%'
+					},
+					{
+						name: 'imageResize:75',
+						value: '75',
+						label: '75%'
+					}
+				],
 				table: {
 					contentToolbar: [
 						'tableColumn',
@@ -160,18 +187,18 @@
 					]
 				},
 				licenseKey: '',
-				
+
 			} )
 			.then( editor => {
 				window.editor = editor;
-		
-				
-				
-				
-		
-				
-				
-				
+
+
+
+
+
+
+
+
 			} )
 			.catch( error => {
 				console.error( 'Oops, something went wrong!' );
