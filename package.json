@@ -45,5 +45,8 @@
   },
   "scripts": {
     "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "husky": "^4.3.0"
   }
 }
